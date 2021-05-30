@@ -155,7 +155,7 @@ class Options:
                 self.plugins.append('sys')
 
             elif opt in ['-a', '--all']:
-                self.plugins += [ 'cpu', 'disk', 'net', 'page', 'sys' ]
+                self.plugins += [ 'time', 'cpu', 'disk', 'net', 'mem', 'page', 'sys', 'proc', 'load' ]
             elif opt in ['-v', '--vmstat']:
                 self.plugins += [ 'proc', 'mem', 'page', 'disk', 'sys', 'cpu' ]
             elif opt in ['-f', '--full']:
@@ -212,8 +212,8 @@ class Options:
             sys.exit(1)
 
         if not self.plugins:
-            print('You did not select any stats, using -cdngy by default.')
-            self.plugins = [ 'cpu', 'disk', 'net', 'page', 'sys' ]
+            print('You did not select any stats, using -tcdnm by default.')
+            self.plugins = [ 'time', 'cpu', 'disk', 'net', 'mem' ]
 
         try:
             if len(args) > 0: self.delay = int(args[0])
