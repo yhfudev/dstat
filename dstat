@@ -29,7 +29,6 @@ import os
 import re
 import resource
 import sched
-import six
 import sys
 import time
 
@@ -46,6 +45,14 @@ pluginpath = [
     '/usr/share/dstat/',
     '/usr/local/share/dstat/',
 ]
+
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
+
+if PY3:
+    string_types = str,
+else:
+    string_types = basestring,
 
 class Options:
     def __init__(self, args):
@@ -418,14 +425,14 @@ class dstat:
 
     def colwidth(self):
         "Return column width"
-        if isinstance(self.name, six.string_types):
+        if isinstance(self.name, string_types):
             return self.width
         else:
             return len(self.nick) * self.width + len(self.nick) - 1
 
     def title(self):
         ret = theme['title']
-        if isinstance(self.name, six.string_types):
+        if isinstance(self.name, string_types):
             width = self.statwidth()
             return ret + self.name[0:width].center(width).replace(' ', '-') + theme['default']
         for i, name in enumerate(self.name):
@@ -440,7 +447,7 @@ class dstat:
 
     def subtitle(self):
         ret = ''
-        if isinstance(self.name, six.string_types):
+        if isinstance(self.name, string_types):
             for i, nick in enumerate(self.nick):
                 ret = ret + theme['subtitle'] + nick[0:self.width].center(self.width) + theme['default']
                 if i + 1 != len(self.nick): ret = ret + char['space']
@@ -454,7 +461,7 @@ class dstat:
             return ret
 
     def csvtitle(self):
-        if isinstance(self.name, six.string_types):
+        if isinstance(self.name, string_types):
             return '"' + self.name + '"' + char['sep'] * (len(self.nick) - 1)
         else:
             ret = ''
@@ -465,7 +472,7 @@ class dstat:
 
     def csvsubtitle(self):
         ret = ''
-        if isinstance(self.name, six.string_types):
+        if isinstance(self.name, string_types):
             for i, nick in enumerate(self.nick):
                 ret = ret + '"' + nick + '"'
                 if i + 1 != len(self.nick): ret = ret + char['sep']
@@ -512,7 +519,7 @@ class dstat:
                 scale = self.scales[i]
             else:
                 scale = self.scale
-            if isinstance(self.val[name], collections.Sequence) and not isinstance(self.val[name], six.string_types):
+            if isinstance(self.val[name], collections.Sequence) and not isinstance(self.val[name], string_types):
                 line = line + cprintlist(self.val[name], ctype, self.width, scale)
                 sep = theme['frame'] + char['colon']
                 if i + 1 != len(self.vars):
@@ -546,7 +553,7 @@ class dstat:
                     line = line + printcsv(val)
                     if j + 1 != len(self.val[name]):
                         line = line + char['sep']
-            elif isinstance(self.val[name], six.string_types):
+            elif isinstance(self.val[name], string_types):
                 line = line + self.val[name]
             else:
                 line = line + printcsv(self.val[name])
